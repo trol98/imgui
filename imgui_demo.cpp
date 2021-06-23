@@ -200,6 +200,19 @@ static void HelpMarker(const char* desc)
     }
 }
 
+// Helper make the UI more compact
+static void PushStyleCompact()
+{
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(style.FramePadding.x, (float)(int)(style.FramePadding.y * 0.60f)));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(style.ItemSpacing.x, (float)(int)(style.ItemSpacing.y * 0.60f)));
+}
+
+static void PopStyleCompact()
+{
+    ImGui::PopStyleVar(2);
+}
+
 // Helper to display basic user controls.
 void ImGui::ShowUserGuide()
 {
@@ -529,6 +542,14 @@ static void ShowDemoWindowWidgets()
 {
     if (!ImGui::CollapsingHeader("Widgets"))
         return;
+
+    static bool disable_all = false;
+    PushStyleCompact();
+    ImGui::Checkbox("Disable all widgets below", &disable_all);
+    ImGui::SameLine(); HelpMarker("Demonstrate using PushDisabled()/PopDisabled() across the rest of window.");
+    PopStyleCompact();
+    if (disable_all)
+        ImGui::PushDisabled();
 
     if (ImGui::TreeNode("Basic"))
     {
@@ -2323,6 +2344,9 @@ static void ShowDemoWindowWidgets()
 
         ImGui::TreePop();
     }
+
+    if (disable_all)
+        ImGui::PopDisabled();
 }
 
 static void ShowDemoWindowLayout()
@@ -3438,19 +3462,6 @@ struct MyItem
     }
 };
 const ImGuiTableSortSpecs* MyItem::s_current_sort_specs = NULL;
-}
-
-// Make the UI compact because there are so many fields
-static void PushStyleCompact()
-{
-    ImGuiStyle& style = ImGui::GetStyle();
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(style.FramePadding.x, (float)(int)(style.FramePadding.y * 0.60f)));
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(style.ItemSpacing.x, (float)(int)(style.ItemSpacing.y * 0.60f)));
-}
-
-static void PopStyleCompact()
-{
-    ImGui::PopStyleVar(2);
 }
 
 // Show a combo box with a choice of sizing policies
@@ -6037,6 +6048,7 @@ void ImGui::ShowStyleEditor(ImGuiStyle* ref)
             HelpMarker("When drawing circle primitives with \"num_segments == 0\" tesselation will be calculated automatically.");
 
             ImGui::DragFloat("Global Alpha", &style.Alpha, 0.005f, 0.20f, 1.0f, "%.2f"); // Not exposing zero here so user doesn't "lose" the UI (zero alpha clips all widgets). But application code could have a toggle to switch between zero and non-zero.
+            ImGui::DragFloat("Disabled Alpha", &style.DisabledAlpha, 0.005f, 0.0f, 1.0f, "%.2f"); ImGui::SameLine(); HelpMarker("Additional alpha multiplier for disabled items (multiply over current value of Alpha).");
             ImGui::PopItemWidth();
 
             ImGui::EndTabItem();

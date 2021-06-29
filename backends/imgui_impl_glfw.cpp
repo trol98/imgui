@@ -87,10 +87,9 @@ struct ImGui_ImplGlfw_Data
 };
 
 // Wrapping access to backend data (to facilitate multiple-contexts stored in io.BackendPlatformUserData)
-static ImGui_ImplGlfw_Data* g_Data;
-static ImGui_ImplGlfw_Data* ImGui_ImplGlfw_CreateBackendData()  { IM_ASSERT(g_Data == NULL); g_Data = IM_NEW(ImGui_ImplGlfw_Data); return g_Data; }
-static ImGui_ImplGlfw_Data* ImGui_ImplGlfw_GetBackendData()     { return ImGui::GetCurrentContext() != NULL ? g_Data : NULL; }
-static void                 ImGui_ImplGlfw_DestroyBackendData() { IM_DELETE(g_Data); g_Data = NULL; }
+static ImGui_ImplGlfw_Data* ImGui_ImplGlfw_CreateBackendData()  { return IM_NEW(ImGui_ImplGlfw_Data)(); }
+static ImGui_ImplGlfw_Data* ImGui_ImplGlfw_GetBackendData()     { return (ImGui_ImplGlfw_Data*)ImGui::GetIO().BackendPlatformUserData; }
+static void                 ImGui_ImplGlfw_DestroyBackendData() { IM_DELETE(ImGui_ImplGlfw_GetBackendData()); }
 
 // Functions
 static const char* ImGui_ImplGlfw_GetClipboardText(void* user_data)

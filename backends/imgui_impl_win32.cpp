@@ -83,10 +83,11 @@ struct ImGui_ImplWin32_Data
 };
 
 // Wrapping access to backend data (to facilitate multiple-contexts stored in io.BackendPlatformUserData)
-static ImGui_ImplWin32_Data*    g_Data;
-static ImGui_ImplWin32_Data*    ImGui_ImplWin32_CreateBackendData()     { IM_ASSERT(g_Data == NULL); g_Data = IM_NEW(ImGui_ImplWin32_Data); return g_Data; }
-static ImGui_ImplWin32_Data*    ImGui_ImplWin32_GetBackendData()        { return ImGui::GetCurrentContext() ? g_Data : NULL; }
-static void                     ImGui_ImplWin32_DestroyBackendData()    { IM_DELETE(g_Data); g_Data = NULL; }
+// FIXME: mouse cursor is a shared resource.
+// FIXME: facilitate calling ImGui_ImplWin32_WndProcHandler() handler and letting us do the right dispatch
+static ImGui_ImplWin32_Data*    ImGui_ImplWin32_CreateBackendData()     { return IM_NEW(ImGui_ImplWin32_Data)(); }
+static ImGui_ImplWin32_Data*    ImGui_ImplWin32_GetBackendData()        { return (ImGui_ImplWin32_Data*)ImGui::GetIO().BackendPlatformUserData; }
+static void                     ImGui_ImplWin32_DestroyBackendData()    { IM_DELETE(ImGui_ImplWin32_GetBackendData()); }
 
 // Functions
 bool    ImGui_ImplWin32_Init(void* hwnd)

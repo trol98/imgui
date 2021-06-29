@@ -74,11 +74,10 @@ struct ImGui_ImplDX12_Data
     ImGui_ImplDX12_Data()           { memset(this, 0, sizeof(*this)); frameIndex = UINT_MAX; }
 };
 
-// Wrapping access to backend data (to facilitate multiple-contexts stored in io.BackendPlatformUserData)
-static ImGui_ImplDX12_Data* g_Data;
-static ImGui_ImplDX12_Data* ImGui_ImplDX12_CreateBackendData()  { IM_ASSERT(g_Data == NULL); g_Data = IM_NEW(ImGui_ImplDX12_Data); return g_Data; }
-static ImGui_ImplDX12_Data* ImGui_ImplDX12_GetBackendData()     { return ImGui::GetCurrentContext() != NULL ? g_Data : NULL; }
-static void                 ImGui_ImplDX12_DestroyBackendData() { IM_DELETE(g_Data); g_Data = NULL; }
+// Wrapping access to backend data (to facilitate multiple-contexts stored in io.BackendRendererUserData)
+static ImGui_ImplDX12_Data*     ImGui_ImplDX12_CreateBackendData()  { return IM_NEW(ImGui_ImplDX12_Data)(); }
+static ImGui_ImplDX12_Data*     ImGui_ImplDX12_GetBackendData()     { return (ImGui_ImplDX12_Data*)ImGui::GetIO().BackendRendererUserData; }
+static void                     ImGui_ImplDX12_DestroyBackendData() { IM_DELETE(ImGui_ImplDX12_GetBackendData()); }
 
 template<typename T>
 static void SafeRelease(T*& res)

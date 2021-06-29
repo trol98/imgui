@@ -73,10 +73,9 @@ struct ImGui_ImplSDL2_Data
 };
 
 // Wrapping access to backend data data (to facilitate multiple-contexts stored in io.BackendPlatformUserData)
-static ImGui_ImplSDL2_Data* g_Data;
-static ImGui_ImplSDL2_Data* ImGui_ImplSDL2_CreateBackendData()  { IM_ASSERT(g_Data == NULL); g_Data = IM_NEW(ImGui_ImplSDL2_Data); return g_Data; }
-static ImGui_ImplSDL2_Data* ImGui_ImplSDL2_GetBackendData()     { return ImGui::GetCurrentContext() != NULL ? g_Data : NULL; }
-static void                 ImGui_ImplSDL2_DestroyBackendData() { IM_DELETE(g_Data); g_Data = NULL; }
+static ImGui_ImplSDL2_Data*     ImGui_ImplSDL2_CreateBackendData()  { return IM_NEW(ImGui_ImplSDL2_Data)(); }
+static ImGui_ImplSDL2_Data*     ImGui_ImplSDL2_GetBackendData()     { return (ImGui_ImplSDL2_Data*)ImGui::GetIO().BackendPlatformUserData; }
+static void                     ImGui_ImplSDL2_DestroyBackendData() { IM_DELETE(ImGui_ImplSDL2_GetBackendData()); }
 
 // Functions
 static const char* ImGui_ImplSDL2_GetClipboardText(void*)

@@ -189,11 +189,10 @@ struct ImGui_ImplOpenGL3_Data
     ImGui_ImplOpenGL3_Data() { memset(this, 0, sizeof(*this)); }
 };
 
-// Wrapping access to backend data (to facilitate multiple-contexts stored in io.BackendPlatformUserData)
-static ImGui_ImplOpenGL3_Data*  g_Data;
-static ImGui_ImplOpenGL3_Data*  ImGui_ImplOpenGL3_CreateBackendData()   { IM_ASSERT(g_Data == NULL); g_Data = IM_NEW(ImGui_ImplOpenGL3_Data); return g_Data; }
-static ImGui_ImplOpenGL3_Data*  ImGui_ImplOpenGL3_GetBackendData()      { IM_ASSERT(ImGui::GetCurrentContext() != NULL); return g_Data; }
-static void                     ImGui_ImplOpenGL3_DestroyBackendData()  { IM_DELETE(g_Data); g_Data = NULL; }
+// Wrapping access to backend data (to facilitate multiple-contexts stored in io.BackendRendererUserData)
+static ImGui_ImplOpenGL3_Data*  ImGui_ImplOpenGL3_CreateBackendData()   { return IM_NEW(ImGui_ImplOpenGL3_Data)(); }
+static ImGui_ImplOpenGL3_Data*  ImGui_ImplOpenGL3_GetBackendData()      { return (ImGui_ImplOpenGL3_Data*)ImGui::GetIO().BackendRendererUserData; }
+static void                     ImGui_ImplOpenGL3_DestroyBackendData()  { IM_DELETE(ImGui_ImplOpenGL3_GetBackendData()); }
 
 // Functions
 bool    ImGui_ImplOpenGL3_Init(const char* glsl_version)

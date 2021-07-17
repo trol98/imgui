@@ -1,0 +1,2 @@
+C:\Users\sewer\source\repos\Nowy folder\SlimeSimulation\SlimeSimulation\src\vendor\imgui\bin\Debug-windows-x86\ImGui\ImGui.pdb
+C:\Users\sewer\source\repos\Nowy folder\SlimeSimulation\SlimeSimulation\src\vendor\imgui\bin-int\Debug-windows-x86\ImGui\ImGui.pdb
